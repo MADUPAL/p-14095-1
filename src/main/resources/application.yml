@@ -1,0 +1,8 @@
+spring:
+  output:
+    ansi:
+      enabled: always #콘솔 컬러풀하게
+  application:
+    name: sbb
+  profiles:
+    active: dev
