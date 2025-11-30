@@ -42,6 +42,12 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+
+    // https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity6
+    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.3.RELEASE")
+
 }
 
 tasks.withType<Test> {

@@ -1,4 +1,4 @@
-package com.mysite.sbb.question;
+package com.mysite.sbb.question.domain;
 
 import com.mysite.sbb.domain.answer.answer.Answer;
 import com.mysite.sbb.domain.answer.answer.AnswerRepository;
@@ -99,7 +99,6 @@ class QuestionRepositoryTest {
         Answer answer = new Answer();
         answer.setContent("네 자동으로 생성됩니다.");
         answer.setQuestion(question);
-        answer.setCreateDate(LocalDateTime.now());
         answerRepository.save(answer);
 
         assertThat(answer.getId()).isGreaterThan(0);

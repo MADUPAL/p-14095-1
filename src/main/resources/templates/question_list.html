@@ -11,17 +11,62 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="question : ${questionList}">
+            <tr th:each="question, loop : ${paging}">
                 <td class="border border-gray-300 px-4 py-2" th:text="${question.id}"></td>
                 <td class="border border-gray-300 px-4 py-2">
                     <a class="text-blue-600 hover:underline"
                        th:href="@{|/question/detail/${question.id}|}"
                        th:text="${question.subject}"></a>
+                    <span class="text-sm text-red-300"
+                          th:if="${#lists.size(question.answers) > 0}"
+                          th:text="${#lists.size(question.answers)}">
+                    </span>
                 </td>
-                <td class="border border-gray-300 px-4 py-2" th:text="${question.createDate}"></td>
+                <td class="border border-gray-300 px-4 py-2" th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             </tbody>
         </table>
+        <!-- 페이징 처리 시작 -->
+        <div th:if="${!paging.isEmpty()}" class="mt-6">
+            <ul class="flex justify-center space-x-1">
+
+                <!-- 이전 버튼 -->
+                <li>
+                    <a th:href="@{|?page=${paging.number-1}|}"
+                       class="px-3 py-1 border text-sm rounded-l
+                      border-gray-300 text-gray-700
+                      hover:bg-gray-100"
+                       th:classappend="${paging.first} ? ' bg-gray-100 text-gray-400 cursor-not-allowed pointer-events-none'">
+                        이전
+                    </a>
+                </li>
+
+                <!-- 페이지 번호들 -->
+                <li th:each="page : ${#numbers.sequence(0, paging.totalPages-1)}"
+                    th:if="${page >= paging.number-5 and page <= paging.number+5}">
+                    <a th:href="@{|?page=${page}|}"
+                       th:text="${page + 1}"
+                       class="px-3 py-1 border text-sm border-gray-300"
+                       th:classappend="${page == paging.number} ?
+                               ' bg-blue-500 text-white border-blue-500' :
+                               ' text-gray-700 hover:bg-gray-100'">
+                    </a>
+                </li>
+
+                <!-- 다음 버튼 -->
+                <li>
+                    <a th:href="@{|?page=${paging.number+1}|}"
+                       class="px-3 py-1 border text-sm rounded-r
+                      border-gray-300 text-gray-700
+                      hover:bg-gray-100"
+                       th:classappend="${paging.last} ? ' bg-gray-100 text-gray-400 cursor-not-allowed pointer-events-none'">
+                        다음
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- 페이징 처리 끝 -->
         <div class="px-5 py-5">
             <a th:href="@{/question/create}" class="inline-block px-4 py-2 font-semibold rounded bg-blue-500 text-white hover:bg-blue-700">
                 질문 등록하기
