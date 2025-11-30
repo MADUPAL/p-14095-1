@@ -13,18 +13,26 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
         <!-- 왼쪽: 홈 -->
-        <a href="/" class="text-xl font-bold text-gray-800 hover:text-blue-600">
+        <a th:href="@{/question/list}" class="text-xl font-bold text-gray-800 hover:text-blue-600">
             sbb
         </a>
 
         <div>
             <!-- 오른쪽 -->
-            <a th:href="@{/user/login}"
+            <a th:href="@{/user/login}" sec:authorize="isAnonymous()"
                class="text-gray-700 hover:text-blue-600 font-medium mr-2">
                 로그인
             </a>
+            <form th:action="@{/user/logout}" sec:authorize="isAuthenticated()" method="post" class="inline-block">
+                <button type="submit" class="text-gray-700 hover:text-blue-600 font-medium mr-2">로그아웃</button>
+            </form>
+<!--            <a th:href="@{/user/logout}" sec:authorize="isAuthenticated()"-->
+<!--               class="text-gray-700 hover:text-blue-600 font-medium mr-2">-->
+<!--                로그아웃-->
+<!--            </a>-->
             <a th:href="@{/user/signup}"
-               class="text-gray-700 hover:text-blue-600 font-medium">회원가입
+               class="text-gray-700 hover:text-blue-600 font-medium">
+                회원가입
             </a>
         </div>
     </div>
