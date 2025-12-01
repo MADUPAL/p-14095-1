@@ -2,12 +2,30 @@
 <div layout:fragment="content" class="max-w-3xl mx-auto mt-8 space-y-8">
 
     <!-- 질문 제목 -->
-    <div class="border-b border-gray-200 pb-4">
+    <div class="border-b border-gray-200 pb-4 relative">
         <h1 class="text-2xl font-bold mb-2" th:text="${question.subject}"></h1>
         <div class="text-gray-800 whitespace-pre-line min-h-40 border border-gray-200 rounded px-4 py-3"
              th:text="${question.content}">
         </div>
-
+        <div class="absolute left-[5px] bottom-[25px] p-2">
+            <a th:href="@{|/question/modify/${question.id}|}"
+               class="rounded bg-blue-500 text-white hover:bg-blue-700 p-2 mr-2"
+               sec:authorize="isAuthenticated()"
+               th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+               th:text="수정"></a>
+            <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}"
+               class="delete rounded bg-blue-500 text-white hover:bg-blue-700 p-2" sec:authorize="isAuthenticated()"
+               th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+               th:text="삭제"></a>
+        </div>
+        <div th:if="${question.modifyDate != null}" class="absolute right-[140px] bottom-[17px] rounded bg-blue-100 p-2 text-sm">
+            <div class="">modified at</div>
+            <div th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+        </div>
+        <div class="absolute right-0 bottom-[17px] rounded bg-blue-100 p-2 text-sm">
+            <div th:if="${question.author != null}" th:text="${question.author.username}"></div>
+            <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+        </div>
     </div>
 
     <!-- 답변 개수 -->
@@ -18,20 +36,46 @@
     <!-- 답변 목록 -->
     <div class="space-y-3">
         <ul class="space-y-3">
-            <li th:each="answer : ${question.answers}"
-                class="border border-gray-200 rounded px-4 py-3 bg-gray-50 text-gray-800 whitespace-pre-line"
-                th:text="${answer.content}">
+            <li th:each="answer : ${question.answers}" class="relative">
+                <div class="border border-gray-200 rounded px-4 py-3 bg-gray-50 text-gray-800 whitespace-pre-line"
+                     th:text="${answer.content}"></div>
+
+                <div class="my-4">
+                    <a th:href="@{|/answer/modify/${answer.id}|}" class="rounded bg-blue-500 text-white hover:bg-blue-700 p-2 mr-2"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                       th:text="수정"></a>
+                    <a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.id}|}"
+                       class="delete rounded bg-blue-500 text-white hover:bg-blue-700 p-2" sec:authorize="isAuthenticated()"
+                       th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                       th:text="삭제"></a>
+                </div>
+
+                <div class="absolute right-0 bottom-[-12px] z-10 rounded bg-blue-100 text-sm py-1 px-2">
+                    <div th:if="${answer.author != null}" th:text="${answer.author.username}"></div>
+                    <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+                <div th:if="${answer.modifyDate != null}" class="absolute right-[140px] bottom-[-12px] z-10 rounded bg-blue-100 text-sm py-1 px-2">
+                    <div class="">modified at</div>
+                    <div th:text="${#temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
             </li>
+
         </ul>
+
     </div>
 
     <!-- 답변 작성 폼 -->
-    <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="space-y-4">
+    <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="space-y-4 pb-5">
         <div>
             <label for="content" class="block font-semibold mb-2">답변 작성</label>
             <div th:replace="~{form_errors :: formErrorsFragment}"></div>
 
-            <textarea name="content" id="content" rows="8"
+            <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" rows="8"
+                      class="w-full border border-gray-300 rounded px-3 py-2 my-2
+                                 focus:outline-none focus:ring-2 focus:ring-blue-500
+                                 text-gray-800"></textarea>
+            <textarea sec:authorize="isAuthenticated()" th:field="*{content}" rows="8"
                       class="w-full border border-gray-300 rounded px-3 py-2 my-2
                                  focus:outline-none focus:ring-2 focus:ring-blue-500
                                  text-gray-800"></textarea>
@@ -45,4 +89,16 @@
     </form>
 
 </div>
+
+<script layout:fragment="script" type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if(confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            };
+        });
+    });
+</script>
+
 </html>

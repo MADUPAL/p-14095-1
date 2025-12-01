@@ -1,6 +1,7 @@
 package com.mysite.sbb.domain.question.question;
 
 import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.domain.user.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,10 +40,21 @@ public class QuestionService {
         return questionRepository.findAll(pageable);
     }
 
-    public void create(String subject, String content) {
+    public void create(String subject, String content, SiteUser user) {
         Question question = new Question();
         question.setSubject(subject);
         question.setContent(content);
+        question.setAuthor(user);
         questionRepository.save(question);
+    }
+
+    public void modify(Question question, String subject, String content) {
+        question.setSubject(subject);
+        question.setContent(content);
+        questionRepository.save(question);
+    }
+
+    public void delete(Question question) {
+        questionRepository.delete(question);
     }
 }

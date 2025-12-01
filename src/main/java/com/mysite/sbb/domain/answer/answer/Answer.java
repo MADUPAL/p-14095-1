@@ -1,6 +1,7 @@
 package com.mysite.sbb.domain.answer.answer;
 
 import com.mysite.sbb.domain.question.question.Question;
+import com.mysite.sbb.domain.user.user.SiteUser;
 import com.mysite.sbb.global.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,4 +25,7 @@ public class Answer extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "question_id")
     private Question question;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SiteUser author;
 }

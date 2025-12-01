@@ -1,6 +1,7 @@
 package com.mysite.sbb.domain.question.question;
 
 import com.mysite.sbb.domain.answer.answer.Answer;
+import com.mysite.sbb.domain.user.user.SiteUser;
 import com.mysite.sbb.global.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,6 +33,9 @@ public class Question extends BaseEntity {
     //new ArrayList로 초기화 해주는 이유
     //1. NullPointerException 방지
     //2. 즉시 사용가능
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SiteUser author;
 
     public Answer addAnswer(String content) {
         Answer answer = new Answer();
